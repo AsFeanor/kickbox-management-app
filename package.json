@@ -1,0 +1,28 @@
+{
+  "name": "kickboxing-management",
+  "version": "1.0.0",
+  "description": "Kickboxing Salon Management System",
+  "main": "backend/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "cd backend && npm run start",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backend": "cd backend && npm install && npm run build",
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "deploy": "cd backend && npm run deploy",
+    "postinstall": "npm run build"
+  },
+  "keywords": ["kickboxing", "management", "sports", "salon"],
+  "author": "Your Name",
+  "license": "MIT",
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=7.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

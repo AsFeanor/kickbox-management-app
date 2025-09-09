@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id           Int      @id @default(autoincrement())
+  ad           String
+  soyad        String
+  cinsiyet     String
+  kayit_tarihi DateTime
+  yas          Int
+  kilo         Int
+  telefon      String
+  ders_turu    String
+  ucret        Int
+  not          String?
+  yas_grubu    String? // optional, only for group lessons
+  paid         Boolean  @default(false) // ödeme durumu
+  payment_due_date     DateTime? // ödeme vadesi
+  last_payment_reminder DateTime? // son hatırlatma tarihi
+  // Grup dersi paket bilgileri
+  current_package_start_date DateTime? // mevcut paket başlangıç tarihi
+  current_package_total_sessions Int? // paketteki toplam ders sayısı (8, 12, vb.)
+  current_package_attended_sessions Int @default(0) // katıldığı ders sayısı
+  package_is_active Boolean @default(false) // paket aktif mi
+  createdAt    DateTime @default(now())
+  privateLessonPackages PrivateLessonPackage[]
+  groupSessions GroupSession[] @relation("GroupAttendance")
+}
+
+model PrivateLessonPackage {
+  id                   Int      @id @default(autoincrement())
+  member               Member   @relation(fields: [memberId], references: [id])
+  memberId             Int
+  createdAt            DateTime @default(now())
+  lesson_day_1         String?
+  lesson_day_2         String?
+  lesson_start_time_1  String?
+  lesson_end_time_1    String?
+  lesson_start_time_2  String?
+  lesson_end_time_2    String?
+  sessions             PrivateLessonSession[]
+  paid                 Boolean  @default(false)
+  is_completed         Boolean  @default(false)
+}
+
+model PrivateLessonSession {
+  id         Int      @id @default(autoincrement())
+  package    PrivateLessonPackage @relation(fields: [packageId], references: [id])
+  packageId  Int
+  date       DateTime
+  start_time String
+  end_time   String
+  is_postponed Boolean @default(false)
+  postponed_to_session_id Int?
+  postponedTo PrivateLessonSession? @relation("PostponedTo", fields: [postponed_to_session_id], references: [id])
+  postponedFrom PrivateLessonSession[] @relation("PostponedTo")
+  is_attended Boolean @default(false)
+  is_missed   Boolean @default(false)
+}
+
+model GroupCategory {
+  id         Int             @id @default(autoincrement())
+  name       String          // e.g. "Çocuklar", "Gençler", "Büyükler"
+  minAge     Int?            // optional age filter
+  maxAge     Int?
+  days       String          // JSON array as string, e.g. '["Salı", "Perşembe", "Cumartesi"]'
+  startTime  String          // "18:00"
+  endTime    String          // "19:30"
+  createdAt  DateTime        @default(now())
+  sessions   GroupSession[]
+}
+
+model GroupSession {
+  id           Int           @id @default(autoincrement())
+  categoryId   Int
+  category     GroupCategory @relation(fields: [categoryId], references: [id])
+  date         DateTime
+  createdAt    DateTime      @default(now())
+  attendees    Member[]      @relation("GroupAttendance")
+}

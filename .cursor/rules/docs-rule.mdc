@@ -1,0 +1,5 @@
+---
+description: Docs u oku ve Her degisiklik yaptiginda eger gerekirse docs u guncelle.
+globs:
+alwaysApply: true
+---

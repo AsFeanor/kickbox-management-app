@@ -3,7 +3,10 @@
   "builds": [
     {
       "src": "backend/index-vercel.js",
-      "use": "@vercel/node"
+      "use": "@vercel/node",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
     },
     {
       "src": "frontend/package.json",
@@ -23,11 +26,6 @@
       "dest": "/frontend/$1"
     }
   ],
-  "functions": {
-    "backend/index-vercel.js": {
-      "maxDuration": 30
-    }
-  },
   "env": {
     "NODE_ENV": "production"
   }

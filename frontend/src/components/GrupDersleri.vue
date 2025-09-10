@@ -570,7 +570,7 @@ async function loadCategoryMembers(categoryId) {
   loadingMembers.value[categoryId] = true
   
   try {
-    const response = await fetch(`http://localhost:3001/api/group-categories/${categoryId}/members`)
+    const response = await fetch(`${config.API_BASE_URL}/api/group-categories/${categoryId}/members`)
     const members = await response.json()
     categoryMembers.value[categoryId] = members
   } catch (error) {
@@ -642,7 +642,7 @@ async function createCategory() {
 // Generate schedule for category
 async function generateSchedule(categoryId) {
   try {
-    const response = await fetch(`http://localhost:3001/api/group-categories/${categoryId}/schedule`, {
+    const response = await fetch(`${config.API_BASE_URL}/api/group-categories/${categoryId}/schedule`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -667,7 +667,7 @@ async function generateSchedule(categoryId) {
 // Toggle payment status
 async function togglePaymentStatus(member) {
   try {
-    const response = await fetch(`http://localhost:3001/api/members/${member.id}/payment`, {
+    const response = await fetch(`${config.API_BASE_URL}/api/members/${member.id}/payment`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ paid: !member.paid })
@@ -762,7 +762,7 @@ async function setAllAttendance(session, categoryId, willAttend) {
   try {
     // Update eligible members attendance in parallel
     const promises = eligibleMembers.map(member => 
-      fetch(`http://localhost:3001/api/group-sessions/${session.id}/attendance`, {
+      fetch(`${config.API_BASE_URL}/api/group-sessions/${session.id}/attendance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ memberId: member.id, present: willAttend })
@@ -773,7 +773,7 @@ async function setAllAttendance(session, categoryId, willAttend) {
     
     // Update package attendance for eligible members
     const packagePromises = eligibleMembers.map(member =>
-      fetch(`http://localhost:3001/api/members/${member.id}/update-attendance`, {
+      fetch(`${config.API_BASE_URL}/api/members/${member.id}/update-attendance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ increment: willAttend })
@@ -819,7 +819,7 @@ async function toggleMemberAttendance(session, memberId, willAttend) {
   }
   
   try {
-    const response = await fetch(`http://localhost:3001/api/group-sessions/${session.id}/attendance`, {
+    const response = await fetch(`${config.API_BASE_URL}/api/group-sessions/${session.id}/attendance`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ memberId, present: willAttend })
@@ -827,7 +827,7 @@ async function toggleMemberAttendance(session, memberId, willAttend) {
     
     if (response.ok) {
       // Update package attendance
-      await fetch(`http://localhost:3001/api/members/${memberId}/update-attendance`, {
+      await fetch(`${config.API_BASE_URL}/api/members/${memberId}/update-attendance`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ increment: willAttend })
@@ -867,7 +867,7 @@ function openPackageEditModal(member) {
 
 async function updateMemberPackage(member, attendedSessions) {
   try {
-    const response = await fetch(`http://localhost:3001/api/members/${member.id}/update-package`, {
+    const response = await fetch(`${config.API_BASE_URL}/api/members/${member.id}/update-package`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -889,7 +889,7 @@ async function updateMemberPackage(member, attendedSessions) {
 // Fix all packages
 async function fixPackages() {
   try {
-    const response = await fetch('http://localhost:3001/api/group-members/fix-packages', {
+    const response = await fetch(`${config.API_BASE_URL}/api/group-members/fix-packages`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' }
     })
@@ -934,7 +934,7 @@ onMounted(async () => {
   
   // Test backend connection
   try {
-    const testResponse = await fetch('http://localhost:3001/api/group-categories')
+    const testResponse = await fetch(`${config.API_BASE_URL}/api/group-categories`)
     console.log('📡 Backend test response status:', testResponse.status)
     if (testResponse.ok) {
       console.log('✅ Backend is running')

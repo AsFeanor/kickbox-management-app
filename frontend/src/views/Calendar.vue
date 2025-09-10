@@ -299,6 +299,7 @@ import FullCalendar from '@fullcalendar/vue3'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
+import config from '../config.js'
 
 export default {
   name: 'Calendar',
@@ -435,7 +436,7 @@ export default {
       }
       
       try {
-        const response = await fetch('http://localhost:3001/api/calendar-events')
+        const response = await fetch(`${config.API_BASE_URL}/api/calendar-events`)
         if (!response.ok) throw new Error('Failed to fetch events')
         
         const data = await response.json()
@@ -584,7 +585,7 @@ export default {
       const newTime = event.start.toTimeString().split(' ')[0].substring(0, 5)
       
       try {
-        const response = await fetch(`http://localhost:3001/api/sessions/${event.id}`, {
+        const response = await fetch(`${config.API_BASE_URL}/api/sessions/${event.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -614,7 +615,7 @@ export default {
       if (!this.selectedEvent) return
       
       try {
-        const response = await fetch(`http://localhost:3001/api/sessions/${this.selectedEvent.id}`, {
+        const response = await fetch(`${config.API_BASE_URL}/api/sessions/${this.selectedEvent.id}`, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({

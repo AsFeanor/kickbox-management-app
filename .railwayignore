@@ -1,0 +1,23 @@
+# Development files
+node_modules/
+.env.local
+.env.development
+
+# Frontend build artifacts (will be rebuilt)
+frontend/dist/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+
+# Temporary files
+*.tmp
+*.temp

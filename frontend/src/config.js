@@ -1,8 +1,8 @@
 // API Configuration
 const config = {
-  // Production'da Railway backend URL'ini kullan
+  // Production'da aynı domain'i kullan (monorepo deployment)
   API_BASE_URL: import.meta.env.PROD 
-    ? import.meta.env.VITE_API_URL || 'https://your-backend.railway.app'
+    ? '' // Same domain, no need for full URL
     : 'http://localhost:3001',
   
   // Development vs Production

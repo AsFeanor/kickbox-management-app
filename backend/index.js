@@ -10,6 +10,19 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const prisma = new PrismaClient();
 
+// Auto-run migrations in production
+if (process.env.NODE_ENV === 'production') {
+  import('child_process').then(({ exec }) => {
+    exec('npx prisma migrate deploy', (error, stdout, stderr) => {
+      if (error) {
+        console.log('Migration error (this is normal on first run):', error.message);
+      } else {
+        console.log('Migration completed:', stdout);
+      }
+    });
+  });
+}
+
 // CORS configuration for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 

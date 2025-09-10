@@ -11,12 +11,5 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:3001'
     }
-  },
-  build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
-    sourcemap: false,
-    minify: false
-  },
-  base: '/'
+  }
 })

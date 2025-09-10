@@ -499,6 +499,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
+import config from '../config.js'
 
 // Reactive state
 const categories = ref([])
@@ -530,7 +531,7 @@ const weekDays = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cuma
 async function fetchCategories() {
   loadingCategories.value = true
   try {
-    const response = await fetch('http://localhost:3001/api/group-categories')
+    const response = await fetch(`${config.API_BASE_URL}/api/group-categories`)
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
@@ -553,7 +554,7 @@ async function fetchCategories() {
 async function fetchCategorySessions(categoryId) {
   loadingSessions.value[categoryId] = true
   try {
-    const response = await fetch(`http://localhost:3001/api/group-categories/${categoryId}/sessions`)
+    const response = await fetch(`${config.API_BASE_URL}/api/group-categories/${categoryId}/sessions`)
     const sessions = await response.json()
     categorySessions.value[categoryId] = sessions
   } catch (error) {
@@ -608,7 +609,7 @@ async function createCategory() {
   creatingCategory.value = true
   
   try {
-    const response = await fetch('http://localhost:3001/api/group-categories', {
+    const response = await fetch(`${config.API_BASE_URL}/api/group-categories`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

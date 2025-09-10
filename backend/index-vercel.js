@@ -1,14 +1,14 @@
 import express from 'express';
+import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { JSONDatabase } from './db-json.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-const prisma = new JSONDatabase();
+const prisma = new PrismaClient();
 
 // CORS configuration for production
 const corsOptions = {

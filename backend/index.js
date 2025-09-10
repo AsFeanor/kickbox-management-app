@@ -1,11 +1,6 @@
 import express from 'express';
 import { PrismaClient } from '@prisma/client';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 const app = express();
 const prisma = new PrismaClient();
@@ -13,18 +8,13 @@ const prisma = new PrismaClient();
 // CORS configuration for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://your-domain.railway.app', 'https://your-custom-domain.com']
+    ? [process.env.FRONTEND_URL, 'https://your-app.railway.app']
     : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
 };
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
-// Serve static files in production
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static(path.join(__dirname, '../frontend/dist')));
-}
 
 // Utility to get next N dates for two weekdays alternating, starting from a date
 function getNextAlternatingDates(startDate, weekday1, weekday2, count) {
@@ -2137,18 +2127,7 @@ app.patch('/api/sessions/:id', async (req, res) => {
   }
 });
 
-// Catch-all handler for production: serve frontend
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
-  });
-}
-
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
-  if (process.env.NODE_ENV === 'production') {
-    console.log(`🌐 Frontend served from: ${path.join(__dirname, '../frontend/dist')}`);
-  }
+  console.log(`Server running on port ${PORT}`);
 }); 

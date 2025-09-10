@@ -1,18 +1,30 @@
 import express from 'express';
 import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import { JSONDatabase } from './db-json.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const prisma = new JSONDatabase();
 
-// CORS için tüm origin'lere izin ver
-app.use(cors({
-  origin: true,
+// CORS configuration for production
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production' 
+    ? ['https://your-domain.railway.app', 'https://your-custom-domain.com']
+    : ['http://localhost:5173', 'http://localhost:3000'],
   credentials: true
-}));
+};
 
+app.use(cors(corsOptions));
 app.use(express.json());
 
+// Serve static files in production
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '../frontend/dist')));
+}
 
 // Utility to get next N dates for two weekdays alternating, starting from a date
 function getNextAlternatingDates(startDate, weekday1, weekday2, count) {
@@ -2125,5 +2137,18 @@ app.patch('/api/sessions/:id', async (req, res) => {
   }
 });
 
-// Export for Vercel serverless
-export default app; 
+// Catch-all handler for production: serve frontend
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  });
+}
+
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📱 Environment: ${process.env.NODE_ENV || 'development'}`);
+  if (process.env.NODE_ENV === 'production') {
+    console.log(`🌐 Frontend served from: ${path.join(__dirname, '../frontend/dist')}`);
+  }
+}); 

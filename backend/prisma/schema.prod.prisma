@@ -1,0 +1,97 @@
+// Production schema for PostgreSQL
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Member {
+  id           Int      @id @default(autoincrement())
+  ad           String
+  soyad        String
+  cinsiyet     String
+  kayit_tarihi DateTime @default(now())
+  yas          Int
+  kilo         Int
+  telefon      String
+  ders_turu    String
+  yas_grubu    String?
+  ucret        Int
+  not          String?
+  paid         Boolean  @default(false)
+  payment_due_date DateTime?
+  current_package_attended_sessions Int @default(0)
+  current_package_total_sessions    Int @default(8)
+  
+  privateLessonPackages PrivateLessonPackage[]
+  groupSessions         GroupSession[]
+  
+  @@map("members")
+}
+
+model PrivateLessonPackage {
+  id                  Int      @id @default(autoincrement())
+  memberId            Int
+  lesson_day_1        String
+  lesson_day_2        String
+  lesson_start_time_1 String
+  lesson_end_time_1   String
+  lesson_start_time_2 String
+  lesson_end_time_2   String
+  paid                Boolean  @default(false)
+  is_completed        Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  
+  member   Member                  @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  sessions PrivateLessonSession[]
+  
+  @@map("private_lesson_packages")
+}
+
+model PrivateLessonSession {
+  id                      Int      @id @default(autoincrement())
+  packageId               Int
+  date                    DateTime
+  start_time              String
+  end_time                String
+  is_postponed            Boolean  @default(false)
+  is_attended             Boolean  @default(false)
+  is_missed               Boolean  @default(false)
+  postponed_to_session_id Int?
+  createdAt               DateTime @default(now())
+  
+  package PrivateLessonPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  
+  @@map("private_lesson_sessions")
+}
+
+model GroupCategory {
+  id        Int      @id @default(autoincrement())
+  name      String
+  min_age   Int
+  max_age   Int
+  days      String   // JSON array of days
+  time      String   // Start and end time
+  createdAt DateTime @default(now())
+  
+  sessions GroupSession[]
+  
+  @@map("group_categories")
+}
+
+model GroupSession {
+  id         Int      @id @default(autoincrement())
+  categoryId Int
+  date       DateTime
+  start_time String
+  end_time   String
+  createdAt  DateTime @default(now())
+  
+  category  GroupCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  attendees Member[]
+  
+  @@map("group_sessions")
+}

@@ -7,8 +7,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "node index.js",
-    "build": "npx prisma generate",
-    "deploy": "npx prisma migrate deploy",
+    "build": "prisma generate",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -19,7 +18,6 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "prisma": "^6.11.1",
-    "sqlite3": "^5.1.7",
-    "vue-router": "^4.5.1"
+    "sqlite3": "^5.1.7"
   }
 }

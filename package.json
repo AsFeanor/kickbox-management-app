@@ -16,6 +16,9 @@
   "keywords": ["kickboxing", "gym", "management", "vue", "express"],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": "18.x"
+  },
   "devDependencies": {
     "concurrently": "^8.2.2"
   }
